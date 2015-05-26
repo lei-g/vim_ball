@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/home/build/FanvilPhone/android/android4.2.2_r1/hardware'
+let g:netrw_dirhist_2='/home/lei'
+let g:netrw_dirhist_3='/home/build/android4.2.2_r1/hardware/ril/rild'
+let g:netrw_dirhist_4='/home/lei/.vim/plugin'

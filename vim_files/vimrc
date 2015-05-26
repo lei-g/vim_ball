@@ -1,0 +1,374 @@
+" Outher G.L
+
+"Set mapleader
+let mapleader = ","
+let g:mapleader = ","
+
+"Fast saving
+nmap <silent> <leader>ww :w<cr>
+nmap <silent> <leader>wf :w!<cr>
+
+"Fast quiting
+nmap <silent> <leader>qw :wq<cr>
+nmap <silent> <leader>qf :q!<cr>
+nmap <silent> <leader>qq :q<cr>
+
+"Fast reloading of the .vimrc
+map <silent> <leader>ss :source ~/.vimrc<cr>
+"Fast editing of .vimrc
+map <silent> <leader>ee :e ~/.vimrc<cr>
+"When .vimrc is edited, reload it
+autocmd! bufwritepost .vimrc source ~/.vimrc
+
+" 关闭vi兼容模式
+set nocp
+
+""""""""""""""""""""""""""""""
+" Tag list (ctags)
+""""""""""""""""""""""""""""""
+" 用ctrl+]快捷键,跳转到光标所在函数标识符的定义处.
+" 使用ctrl+t退回上层
+" 如果想在以write_开头的标识符中选择一下,:tselect /^write_ 这里,'^'表示开头,同理,'$'表示末尾.
+"设定linux系统中ctags程序的位置
+let Tlist_Ctags_Cmd = '/usr/local/ctags/bin/ctags'
+let Tlist_Show_One_File = 1 "不同时显示多个文件的tag，只显示当前文件的
+let Tlist_Exit_OnlyWindow = 1 "如果taglist窗口是最后一个窗口，则退出vim
+let Tlist_Use_Right_Window = 1 "在右侧窗口中显示taglist窗口
+"使用<F8>键就可以打开/关闭taglist窗口
+map <silent> <F8> :TlistOpen<cr>
+
+""""""""""""""""""""""""""""""
+" netrw setting
+""""""""""""""""""""""""""""""
+let g:netrw_winsize = 30
+nmap <silent> <leader>fe :Sexplore!<cr>
+
+""""""""""""""""""""""""""""""
+" BufExplorer
+""""""""""""""""""""""""""""""
+" 使用",bv"就可以打开一个垂直分割窗口显示当前的缓冲区.
+let g:bufExplorerDefaultHelp=0 " Do not show default help.
+let g:bufExplorerShowRelativePath=1 " Show relative paths.
+let g:bufExplorerSortBy='mru' " Sort by most recently used.
+let g:bufExplorerSplitRight=0 " Split left.
+let g:bufExplorerSplitVertical=1 " Split vertically.
+let g:bufExplorerSplitVertSize = 30 " Split width
+let g:bufExplorerUseCurrentWindow=1 " Open in new window.
+autocmd BufWinEnter \[Buf\ List\] setl nonumber
+
+""""""""""""""""""""""""""""""
+" winManager setting
+""""""""""""""""""""""""""""""
+" BufExplorer窗口中使用CTRL-N可以切换到FileExplorer
+"let g:winManagerWindowLayout = "BufExplorer,FileExplorer|TagList"
+let g:winManagerWindowLayout = "FileExplorer|TagList"
+let g:winManagerWidth = 30
+let g:defaultExplorer = 0
+nmap <C-W><C-F> :FirstExplorerWindow<cr>
+nmap <C-W><C-B> :BottomExplorerWindow<cr>
+nmap <silent> <leader>wm :WMToggle<cr>
+"按F7,先保存所有编辑过的文件，然后刷新bufexplorer，然后在跳到fileexplorer并用F5刷新，最后跳回编辑页面
+"nmap <F7> :wa<cr>:TlistUpdate<cr>:FirstExplorerWindow<cr><F5><c-w>b
+"<5>和开启lookupfile的快捷键冲突.
+nmap <F3> :wa<cr>:TlistUpdate<cr><c-w>b
+
+" lookup file with ignore case
+function! LookupFile_IgnoreCaseFunc(pattern)
+    let _tags = &tags
+    try
+        let &tags = eval(g:LookupFile_TagExpr)
+        let newpattern = '\c' . a:pattern
+        let tags = taglist(newpattern)
+    catch
+        echohl ErrorMsg | echo "Exception: " . v:exception | echohl NONE
+        return ""
+    finally
+        let &tags = _tags
+    endtry
+
+    " Show the matches for what is typed so far.
+    let files = map(tags, 'v:val["filename"]')
+    return files
+endfunction
+
+" 用"CTRL-N"和"CTRL-P"来在下拉列表中选择所需的文件
+""""""""""""""""""""""""""""""
+" lookupfile setting
+""""""""""""""""""""""""""""""
+let g:LookupFile_MinPatLength = 2 "最少输入2个字符才开始查找
+let g:LookupFile_PreserveLastPattern = 0 "不保存上次查找的字符串
+let g:LookupFile_PreservePatternHistory = 1 "保存查找历史
+let g:LookupFile_AlwaysAcceptFirst = 1 "回车打开第一个匹配项目
+let g:LookupFile_AllowNewFiles = 0 "不允许创建不存在的文件
+if filereadable("./filenametags") "设置tag文件的名字
+let g:LookupFile_TagExpr = '"./filenametags"'
+endif
+let g:LookupFile_LookupFunc = 'LookupFile_IgnoreCaseFunc'
+" 映射LookupFile为,lk
+"nmap <silent> <leader>lk <Plug>LookupFile<cr>
+nmap <silent> <leader>lk :LookupFile<cr>
+" 映射LUBufs为,ll
+nmap <silent> <leader>ll :LUBufs<cr>
+" 映射LUWalk为,lw
+nmap <silent> <leader>lw :LUWalk<cr>
+
+" 打开vim的语法高亮功能
+syntax enable
+" color scheme
+if has("gui_running")
+    colorscheme darkblue_my
+else
+    colorscheme desert_my
+endif
+
+""""""""""""""""""""""""""""""
+" mark setting
+""""""""""""""""""""""""""""""
+" 可以在高亮文本上使用,#或*,来上下搜索高亮文本
+" 在使用了,#或,*后，就可以直接输入#或*来继续查找该高亮文本
+" 输入,hl时,就会把光标下的单词高亮
+nmap <silent> <leader>hl <Plug>MarkSet
+vmap <silent> <leader>hl <Plug>MarkSet
+" 在高亮单词上输入,hh时,会清除该单词的高亮
+" 如果在高亮单词外输入,hh,会清除所有的高亮
+nmap <silent> <leader>hh <Plug>MarkClear
+vmap <silent> <leader>hh <Plug>MarkClear
+" 用,hr来输入一个正则表达式，这会高亮所有符合这个正则表达式的文本
+nmap <silent> <leader>hr <Plug>MarkRegex
+vmap <silent> <leader>hr <Plug>MarkRegex
+
+" 查看vim是否支持cscope
+" vim --version | grep cscope
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" cscope setting
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("cscope")
+    " 指定用来执行cscope的命令
+    set csprg=/usr/local/bin/cscope
+    " 先搜索tags标签文件,再搜索cscope数据库
+    set csto=1
+    " 同时搜索cscope数据库和标签文件
+    set cst
+    " 不显示添加数据库是否成功
+    set nocsverb
+    " add any database in current directory
+    if filereadable("cscope.out")
+        cs add cscope.out
+    endif
+    " 显示添加成功与否
+    set csverb
+endif
+" 先按下Ctrl+@,松开后快速按下相应的键，比如按下g
+" 妈的这个问题折腾很久我一开始按了Ctrl+@没松直接按s,怎么都不好使
+" Ctrl+@直接按Ctrl+2就好
+" s:查找C语言符号,即查找函数名、宏、枚举值等出现的地方
+nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+" g:查找函数、宏、枚举等定义的位置,类似ctags所提供的功能
+nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+" c:查找调用本函数的函数
+nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+" t:查找指定的字符串
+nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+" e:查找egrep模式,相当于egrep功能,但查找速度快多了
+nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+" f:查找并打开文件,类似vim的find功能
+nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+" i:查找包含本文件的文件
+nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+" d:查找本函数调用的函数
+nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+" 关闭数据库连接
+nmap <C-@>k :cs kill cscope.out <CR>
+" 打开数据库连接
+nmap <C-@>o :cs add cscope.out <CR>
+" 保存文件并且更新数据库
+nmap <C-@>w :w<CR>:!find . -type f > cscope.files<CR><CR>:!cscope -bkq -i cscope.files<CR><CR>
+" 保存文件并且更新ctags
+nmap <C-@>u :w<CR>:!ctags -R<CR><CR>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR>
+" 保存文件更新全部
+" nmap <C-@>a <C-@>w <C-@>u
+nmap <F4> <C-@>w <C-@>u
+
+""""""""""""""""""""""""""""""
+" quickfix setting
+""""""""""""""""""""""""""""""
+" Ctrl-o返回上个文件
+",<space>(先按,再按空格)就可以编译
+autocmd FileType c,cpp map <buffer> <leader><space> :w<cr>:make<cr>
+",cp和,cn跳到上一个和下一个错误
+nmap <leader>cn :cn<cr>
+nmap <leader>cp :cp<cr>
+",cw来打开一个quickfix窗口
+nmap <leader>cw :cw 10<cr>
+" 在当前文件中快速查找光标下的单词
+nmap <leader>lv :lv /<c-r>=expand("<cword>")<cr>/ %<cr>:lw<cr>
+
+""""""""""""""""""""""""""""""
+" 自动补全 setting
+""""""""""""""""""""""""""""""
+" 按下CTRL-X CTRL-O在vim的状态行会显示Omni Completeion,表明现在进行的是全能补全
+" 使用来CTRL-P和CTRL-N上下选择
+" 用CTRL-E停止补全并回到原来录入的文字.用CTRL-Y可以停止补全,并接受当前所选的项目.
+" 去掉预览窗口的显示
+set completeopt=longest,menu
+" 如果下拉菜单弹出,回车映射为接受当前所选项目,否则,仍映射为回车；
+inoremap <expr> <CR> pumvisible()?"\<C-Y>":"\<CR>"
+" 如果下拉菜单弹出,CTRL-J映射为在下拉菜单中向下翻页.否则映射为CTRL-X CTRL-O；
+inoremap <expr> <C-J> pumvisible()?"\<PageDown>\<C-N>\<C-P>":"\<C-X><C-O>"
+" 如果下拉菜单弹出,CTRL-K映射为在下拉菜单中向上翻页,否则仍映射为CTRL-K；
+inoremap <expr> <C-K> pumvisible()?"\<PageUp>\<C-P>\<C-N>":"\<C-K>"
+" 如果下拉菜单弹出,CTRL-U映射为CTRL-E,即停止补全,否则,仍映射为CTRL-U；
+inoremap <expr> <C-U> pumvisible()?"\<C-E>":"\<C-U>"
+" vim中其它的补全方式包括：
+" 整行补全 CTRL-X CTRL-L
+" 根据当前文件里关键字补全 CTRL-X CTRL-N
+" 根据字典补全 CTRL-X CTRL-K
+" 根据同义词字典补全 CTRL-X CTRL-T
+" 根据头文件内关键字补全 CTRL-X CTRL-I
+" 根据标签补全 CTRL-X CTRL-]
+" 补全文件名 CTRL-X CTRL-F
+" 补全宏定义 CTRL-X CTRL-D
+" 补全vim命令 CTRL-X CTRL-V
+" 用户自定义补全方式 CTRL-X CTRL-U
+" 拼写建议 CTRL-X CTRL-S
+inoremap <C-]> <C-X><C-]>
+inoremap <C-F> <C-X><C-F>
+inoremap <C-D> <C-X><C-D>
+inoremap <C-L> <C-X><C-L>
+" SuperTab Setting
+let g:SuperTabRetainCompletionType = 2
+let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
+
+""""""""""""""""""""""""""""""
+" showmarks setting
+""""""""""""""""""""""""""""""
+" Enable ShowMarks
+let showmarks_enable = 1
+" Show which marks
+let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+" Ignore help, quickfix, non-modifiable buffers
+let showmarks_ignore_type = "hqm"
+" Hilight lower & upper marks
+let showmarks_hlline_lower = 1
+let showmarks_hlline_upper = 1
+" ShowMarks插件中已经定义了一些快捷键：
+" <Leader>mt - 打开/关闭ShowMarks插件
+" <Leader>mo - 强制打开ShowMarks插件
+" <Leader>mh - 清除当前行的标记
+" <Leader>ma - 清除当前缓冲区中所有的标记
+" <Leader>mm - 在当前行打一个标记，使用下一个可用的标记名
+
+""""""""""""""""""""""""""""""
+" markbrowser setting
+""""""""""""""""""""""""""""""
+" 直接使用,mk就可以打开Mark Browser窗口
+nmap <silent> <leader>mk :MarksBrowser<cr>
+
+""""""""""""""""""""""""""""""
+" foldmethod setting
+""""""""""""""""""""""""""""""
+" autocmd FileType c,cpp setl fdm=syntax | setl fen
+" zo – 打开光标下的折叠
+" zO – 循环打开光标下的折叠，也就是说，如果存在多级折叠，每一级都会被打开
+" zc – 关闭光标下的折叠
+" zC – 循环关闭光标下的折叠
+" vim提供了一些命令在折叠间快速移动：
+" [z – 到当前打开折叠的开始
+" ]z – 到当前打开折叠的结束
+" zj – 向下移动到下一个折叠的开始处
+" zk – 向上移动到上一个折叠的结束处
+
+" a.vim
+" 输入:A命令,就切换到头文件了(需要源文件和头文件在同一目录中)
+" matchit.vim
+" 可以用%在各种开始/结束标记间跳转
+
+""""""""""""""""""""""""""""""
+" pathogen setting
+""""""""""""""""""""""""""""""
+" e.g.
+" cd ~/.vim/bundle
+" git clone https://github.com/oplatek/Conque-Shell --depth=1
+" rm -rf ~/.vim/bundle/Conque-Shell/.git
+" 插件管理器 
+" start pathogen
+execute pathogen#infect()
+
+""""""""""""""""""""""""""""""
+" Conque-Shell setting
+""""""""""""""""""""""""""""""
+" e.g.
+" :ConqueTerm bash
+" :ConqueTerm python
+" :ConqueTerm mysql -h localhost -u joe_lunchbox Menu
+" ConqueTerm       <command>: 在当前的窗口打开<command>
+" ConqueTermSplit  <command>:横向分割一个窗口之后打开<command>
+" ConqueTermVSplit <command>:竖向分割一个窗口之后打开<command>
+" ConqueTermTab    <command>:先建一个tab页之后打开<command> 
+" 快捷键  功能
+" <F9>    将选中的文本，发送到Conque-Shell的交互程序中
+" <F10>   将当前文件所有文本，发送到Conque-Shell的交互程序中
+" <F11>   如果当前编辑文件可执行，则打开新的Conque-Shell并运行
+" 水平分割出一个bash
+nnoremap <C-\>b :ConqueTermSplit bash<CR>
+" 垂直分割出一个bash
+nnoremap <C-\>vb :ConqueTermVSplit bash<CR>
+
+""""""""""""""""""""""""""""""
+" nerdcommenter setting
+""""""""""""""""""""""""""""""
+" [count]<leader>cu |NERDComUncommentLine|
+" Uncomments the selected line(s). 
+" <leader>cA |NERDComAppendComment|
+" Adds comment delimiters to the end of line and goes into insert mode between them. 
+" [count]<leader>cs |NERDComSexyComment|
+" Comments out the selected lines ``sexily'' 
+" [count]<leader>cm |NERDComMinimalComment|
+" Comments the given lines using only one set of multipart delimiters. 
+" [count]<leader>cc |NERDComComment|
+" Comment out the current line or text selected in visual mode. 
+
+""""""""""""""""""""""""""""""
+" vimgdb setting
+""""""""""""""""""""""""""""""
+let g:vimgdb_debug_file = ""
+run macros/gdb_mappings.vim
+
+" 只有支持autocommands时会执行这部分代码.
+if has("autocmd")
+    " 使用文件类型检查和基于文件的自动缩紧
+    filetype plugin indent on
+    " Makefiles 文件中tab使用长度8.
+    autocmd FileType make set tabstop=8 shiftwidth=8 softtabstop=0 noexpandtab
+endif
+" 对于其它情况，使用4个空格宽度的TAB
+set tabstop=4       " TAB的宽度被设置为4个空格.
+                    " 但仍然是\t. 只是vim把它解释成4个空格宽度，用别的编辑器还是\t符号
+set shiftwidth=4    " 缩进使用4个空格的宽度.
+set softtabstop=4   " 设置tab所占的列数，当输入tab时，设为4个空格的宽度.
+set expandtab       " 扩展tab为空格.
+
+" 以后在插入模式下，只要按F9键就可以切换自动缩进.
+set pastetoggle=<F9>
+" 添加,sn快速切换开启行号和关闭行号
+nnoremap <silent>sn :set nu!<CR>
+
+" support UTF8
+set encoding=utf-8
+set fileencoding=utf-8
+set termencoding=utf-8
+
+" 用xw来copy,在另外的终端上用xr来贴
+nmap xr :r $HOME/.vimxfer<CR>
+nmap xw :'a,.w! $HOME/.vimxfer<CR>
+vmap xr c<esc>:r $HOME/.vimxfer<CR>
+vmap xw :w! $HOME/.vimxfer<CR>
+
+" 在函数中移动光标的快捷键:
+" [{ 转到上一个位于第一列的"{"
+" }] 转到下一个位于第一列的"{"
+" { 转到上一个空行
+" } 转到下一个空行
+" gd 转到当前光标所指的局部变量的定义
+" * 转到当前光标所指的单词下一次出现的地方
+" # 转到当前光标所指的单词上一次出现的地方
