@@ -96,7 +96,11 @@ function all_clean()
 
     luf_clean    
 
-    echo "------------------------------------------------"
-    echo "cll_clean: lean all successed!"
-    rm -f create_env.sh
+    if [ $1 == 0 ]; then
+        echo "------------------------------------------------"
+        echo "cll_clean: lean all successed!"
+        rm -f create_env.sh
+    else
+        echo "Keep the file create_env.sh exists"
+    fi
 }
