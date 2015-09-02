@@ -18,6 +18,11 @@ sudo vi /etc/bash.bashrc
 
 export PATH=/usr/local/ctags/bin:$PATH
 
+如果编译有问题的话，直接sudo apt-get install ctags即可。
+此时可执行文件是/usr/bin/ctags
+
+需要修改.vimrc文件
+
 然后完工
 
 Cscope:
@@ -26,6 +31,11 @@ Cscope:
 ./configure
 make
 make install
+
+如果编译有问题的话，直接sudo apt-get install cscope即可。
+此时可执行文件是/usr/bin/cscope
+
+需要修改.vimrc文件
 
 cscope -Rbq
 命令为代码生成一个cscope数据库

@@ -361,8 +361,13 @@ nnoremap <silent>sn :set nu!<CR>
 
 " support UTF8
 set encoding=utf-8
-set fileencoding=utf-8
+" set fileencoding=utf-8
+set fileencodings=ucs-bom,utf-,GB18030,gbk
 set termencoding=utf-8
+" Set state bar display some information
+" If want cancel display set laststatus=0
+set laststatus=2
+set statusline=%<[%n]\%F\ %h%m%r%=%k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}][%{&ff}][ASCII=\%03.3b]\ %-10.(%l,%c%V%)\ %P
 
 " 用xw来copy,在另外的终端上用xr来贴
 nmap xr :r $HOME/.vimxfer<CR>
