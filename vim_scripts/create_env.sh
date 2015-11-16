@@ -40,15 +40,21 @@ function tags_clean()
 function cs_build()
 {
     #export all type file to cscope.files
-    find . -type f > cscope.files
-    if [ ! $? -eq 0 ]; then
-        echo "cs_build: generate cscope.files failed"
-        return 1
-    fi
+    #find . -type f > cscope.files
+    #if [ ! $? -eq 0 ]; then
+        #echo "cs_build: generate cscope.files failed"
+        #return 1
+    #fi
 
-    cscope -bkq -i cscope.files
+    #cscope -bkq -i cscope.files
+    #if [ ! $? -eq 0 ]; then
+        #echo "cs_build: generate symbolic index file failed"
+        #return 1
+    #fi
+
+    cscope -Rbq
     if [ ! $? -eq 0 ]; then
-        echo "cs_build: generate symbolic index file failed"
+        echo "cs_build: generate cscope files failed"
         return 1
     fi
 }
@@ -56,7 +62,8 @@ function cs_build()
 function cs_clean()
 {
     #Clean all cscope the generted files
-    rm -f cscope.files cscope.in.out cscope.out cscope.po.out
+    #rm -f cscope.files cscope.in.out cscope.out cscope.po.out
+    rm -f cscope.in.out cscope.out cscope.po.out
     if [ ! $? -eq 0 ]; then
         echo "cs_clean: clean cscope file failed"
         return 1
@@ -103,11 +110,13 @@ function all_build()
     fi
 
     if [ $1 == "cs" ]; then
-        echo "generate sccope files"
+        echo "generate cscope files"
         cs_build
         if [ ! $? -eq 0 ]; then
             echo "all_build: cs_build erroe!"
             return
+        else
+            echo "cs_build over"
         fi
     elif [ $1 == "nocs" ] ;then
         echo "doesn't generate cscope files"
@@ -119,12 +128,16 @@ function all_build()
     if [ ! $? -eq 0 ]; then
         echo "all_build: tags_build error!"
         return
+    else
+        echo "tags_build over"
     fi
 
     luf_build
     if [ ! $? -eq 0 ]; then
         echo "all_build: luf_build error!"
         return
+    else
+        echo "luf_build over"
     fi
 
     echo "-----------------------------------------------"
