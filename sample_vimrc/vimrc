@@ -1,0 +1,84 @@
+" Outher G.L
+
+" Set mapleader
+let mapleader = ","
+let g:mapleader = ","
+
+" Fast saving
+nmap <silent> <leader>ww :w<cr>
+nmap <silent> <leader>wf :w!<cr>
+
+" Fast quiting
+nmap <silent> <leader>qw :wq<cr>
+nmap <silent> <leader>qf :q!<cr>
+nmap <silent> <leader>qq :q<cr>
+
+" Fast reloading of the .vimrc
+map <silent> <leader>ss :source ~/.vimrc<cr>
+" Fast editing of .vimrc
+map <silent> <leader>ee :e ~/.vimrc<cr>
+" When .vimrc is edited, reload it
+autocmd! bufwritepost .vimrc source ~/.vimrc
+
+" 关闭vi兼容模式
+set nocp
+
+" Arrow keys are evil
+map <up>    <nop>
+map <down>  <nop>
+map <left>  <nop>
+map <right> <nop>
+
+""""""""""""""""""""""""""""""
+" netrw setting
+""""""""""""""""""""""""""""""
+let g:netrw_winsize = 30
+nmap <silent> <leader>fe :Sexplore!<cr>
+
+""""""""""""""""""""""""""""""
+" matchit.vim
+""""""""""""""""""""""""""""""
+" 可以用%在各种开始/结束标记间跳转
+
+" 只有支持autocommands时会执行这部分代码.
+if has("autocmd")
+    " 使用文件类型检查和基于文件的自动缩紧
+    filetype plugin indent on
+    " Makefiles 文件中tab使用长度8.
+    autocmd FileType make set tabstop=8 shiftwidth=8 softtabstop=0 noexpandtab
+endif
+" 对于其它情况，使用4个空格宽度的TAB
+set tabstop=4       " TAB的宽度被设置为4个空格.
+                    " 但仍然是\t. 只是vim把它解释成4个空格宽度，用别的编辑器还是\t符号
+set shiftwidth=4    " 缩进使用4个空格的宽度.
+set softtabstop=4   " 设置tab所占的列数，当输入tab时，设为4个空格的宽度.
+set expandtab       " 扩展tab为空格.
+
+" 以后在插入模式下，只要按F9键就可以切换自动缩进.
+set pastetoggle=<F9>
+" 添加,sn快速切换开启行号和关闭行号
+nnoremap <silent>sn :set nu!<CR>
+
+" support UTF8
+set encoding=utf-8
+" set fileencoding=utf-8
+set fileencodings=ucs-bom,utf-,GB18030,gbk
+set termencoding=utf-8
+" Set state bar display some information
+" If want cancel display set laststatus=0
+set laststatus=2
+set statusline=%<[%n]\%F\ %h%m%r%=%k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}][%{&ff}][ASCII=\%03.3b]\ %-10.(%l,%c%V%)\ %P
+
+" 用xw来copy,在另外的终端上用xr来贴
+nmap xr :r $HOME/.vimxfer<CR>
+nmap xw :'a,.w! $HOME/.vimxfer<CR>
+vmap xr c<esc>:r $HOME/.vimxfer<CR>
+vmap xw :w! $HOME/.vimxfer<CR>
+
+" 在函数中移动光标的快捷键:
+" { 转到上一个空行
+" } 转到下一个空行
+" gd 转到当前光标所指的局部变量的定义
+" * 转到当前光标所指的单词下一次出现的地方
+" # 转到当前光标所指的单词上一次出现的地方
+
